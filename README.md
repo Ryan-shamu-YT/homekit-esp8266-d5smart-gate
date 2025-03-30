@@ -32,7 +32,7 @@ The `main.ino` class implements:
 ### Gate Motor, LLC, Relay Module, Buck Converter, and ESP8266 Connections
 
 #### 1. **Gate Motor to Buck Converter:**
-- **I/06** → **Buck Converter IN-** (Use ground from gate motor for isolation).
+- **COM** → **Buck Converter IN-** (Use ground from gate motor for isolation).
 - **+12V Out** → **Buck Converter IN+** (12V output for buck converter input).
   
 #### 2. **Gate Motor to Relay Module:**
@@ -81,10 +81,13 @@ The `main.ino` class implements:
 
 ![428311938-f44cfe6e-a5c6-495d-8480-1c9bc4ff0227](https://github.com/user-attachments/assets/ce4036c2-da26-44a4-bb67-4f9955ee7813)
 
-Only three connections need to be made to the D5 Evo Gate Motor:
-1. Trig: this needs to be connected to ground for the gate to activate. I have connected this to a relay controlled by the ESP8266
-2. Status: this needs to be logic-level-converted from 5V to 3.3V. Connect to a GPIO pin of the ESP8266
-3. Com (ground, 0V): this is important for two reason: (1) status decoding and (2) triggering (activating) the gate. Because of (1), **the gate must share a ground with the ESP8266**. 
+Only 5 connections need to be made to the D5 SMART Gate Motor:
+1. Trig(I/O1): this needs to be connected to ground for the gate to activate. I have connected this to a relay controlled by the ESP8266
+2. Status(I/O4): this needs to be logic-level-converted from 5V to 3.3V. Connect to a GPIO pin of the ESP8266
+3. Com (I/O6, ground, 0V): this is important for two reason: (1) status decoding and (2) triggering (activating) the gate. Because of 
+4. Com (COM, ground, 0V): EXTRA GROUND, this is important for powering
+4. 12V OUT (12V OUT, 12V): this is important for powering
+(1), **the gate must share a ground with the ESP8266**. 
 
 
 ## Software Requirements
