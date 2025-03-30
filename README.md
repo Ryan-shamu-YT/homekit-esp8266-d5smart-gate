@@ -79,7 +79,7 @@ The `main.ino` class implements:
 * **Relay:** The relay acts as the switch to trigger the gate motor's movement.
 
 
-![428311938-f44cfe6e-a5c6-495d-8480-1c9bc4ff0227](https://github.com/user-attachments/assets/59c98669-cf6b-4768-b37a-f5637a8d8164)
+![428311938-f44cfe6e-a5c6-495d-8480-1c9bc4ff0227](https://github.com/user-attachments/assets/ce4036c2-da26-44a4-bb67-4f9955ee7813)
 
 Only three connections need to be made to the D5 Evo Gate Motor:
 1. Trig: this needs to be connected to ground for the gate to activate. I have connected this to a relay controlled by the ESP8266
