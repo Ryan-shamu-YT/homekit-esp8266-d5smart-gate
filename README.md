@@ -32,18 +32,18 @@ The `main.ino` class implements:
 ### Gate Motor, LLC, Relay Module, Buck Converter, and ESP8266 Connections
 
 #### 1. **Gate Motor to Buck Converter:**
-- **Safe COMMON** → **Buck Converter IN-** (Use ground from gate motor for isolation).
+- **I/06** → **Buck Converter IN-** (Use ground from gate motor for isolation).
 - **+12V Out** → **Buck Converter IN+** (12V output for buck converter input).
   
 #### 2. **Gate Motor to Relay Module:**
 - **COM (Gate Motor)** → **Relay COM** (Trigger input for gate motor, activated by relay).
-- **TRIG** → **Relay NO** (Trigger input for gate motor, connected to Normally Open terminal of relay).
+- **I/O1** → **Relay NO** (Trigger input for gate motor, connected to Normally Open terminal of relay).
 
 #### 3. **Gate Motor Status to LLC:**
-- **Status (Gate Motor)** → **LLC HV IN** (5V status output connected to high-voltage side of LLC).
+- **I/04 (Gate Motor)** → **LLC HV IN** (5V status output connected to high-voltage side of LLC).
 
 #### 4. **LLC Connections:**
-- **HV [1-4]** → **Gate Motor Status** (Status signal from gate motor to LLC).
+- **HV [1-4]** → **I/04** (Status signal from gate motor to LLC).
 - **HV** → **Buck Converter OUT+** (High-voltage side powered by 5V from buck converter).
 - **GND (Next to HV)** → **Buck Converter OUT-** (Negative terminal of buck converter).
 - **LV** → **ESP8266 3.3V** (Low-voltage side, powered by ESP8266).
@@ -52,23 +52,23 @@ The `main.ino` class implements:
 
 #### 5. **Relay Module to ESP8266:**
 - **IN** → **ESP8266 GPIO 14** (Control signal from GPIO 14, triggering relay).
-- **NO** → **Gate Motor TRIG** (Normally Open terminal to trigger gate motor).
+- **NO** → **Gate Motor I/O1** (Normally Open terminal to trigger gate motor).
 - **COM** → **Gate COM** (Connected to the gate COM for isolation).
-- **VCC** → **Buck Converter 5V** (Power for relay module).
-- **GND** → **Common Ground** (Shared ground for all components).
+- **VCC** → **Buck Converter OUT+** (Power for relay module).
+- **GND** → **BUCK CONVERTER OUT -** (Shared ground for all components).
 
 #### 6. **Buck Converter to Power Sources:**
 - **VIN (+)** → **Gate Motor +12V Out** (12V input from gate motor to buck converter).
 - **VOUT (-)** → **LLC HV GND**, **Relay GND** (5V ground output).
 - **VOUT (+)** → **ESP8266 Power**, **LLC HV**, **Relay VCC** (5V output for powering ESP8266 and other components).
-- **VIN (-)** → **Common Ground** (Shared ground).
+- **VIN (-)** → **Gate Motor I/O6** (Shared ground).
 
 #### 7. **ESP8266 to LLC and Relay Module:**
-- **GND** → **Common Ground** (Shared ground).
+- **GND** → **Gate Motor I/06** (Shared ground).
 - **3.3V** → **LLC LV** (Power for low-voltage side of LLC).
 - **5V** → **Relay VCC**, **LLC HV** (Power for relay and LLC if not using buck converter).
 - **GPIO 14** → **Relay IN** (Control signal to relay).
-- **GPIO 12** → **LLC LV OUT** (Status signal from LLC converted from gate motor status).
+- **GPIO 12** → **LLC LV OUT** (Status signal from LLC converted from gate motor I/04).
                                                  |
 
 **Notes:**
