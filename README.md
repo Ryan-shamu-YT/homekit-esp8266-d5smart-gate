@@ -13,9 +13,9 @@ This project implements a HomeKit-compatible gate controller using an ESP8266 mi
 ## How It Works
 The system uses an ESP8266 microcontroller to manage a relay and monitor the gate's operational state:
 - **Relay Control:** The relay pin (GPIO 14) triggers the gate motor.
-- **Status Monitoring:** The status pin (GPIO 12) monitors the gate's operation based on pulse patterns sent by the gate controller.
-- **Flashing Patterns:** The gate signals its state using pulse patterns, where the duration of HIGH and LOW signals indicates whether the gate is opening or closing.
-- **Logic Level Conversion:** A logic level converter is used to shift the gate's 5V status signal to a 3.3V input suitable for the ESP8266.
+- **Status Monitoring:** The status pin (A0) monitors the gate's operation based on voltage sent by the gate controller.
+- **Flashing Patterns:** The gate signals its state using voltage levels, where the voltage of the IO/4 indicates whether the gate is opening or closing.
+- **Voltage Conversion:** A VOLTAGE DIVIDING circuit is used to shift the gate's 5V status signal to a 1V input suitable for the ESP8266 A0 pin.
 
 The `main.ino` class implements:
 - `update()` – Triggered by HomeKit to open/close the gate.
@@ -25,7 +25,7 @@ The `main.ino` class implements:
 - ESP8266 microcontroller
 - Relay module (for gate control)
 - Buck Converter (Optional if you want to use another source of power)
-- Logic level converter (5V to 3.3V signal conversion on status pin)
+- 10K Resistor and 40k Resistor (5V to 1V signal conversion on A0 pin)
 
 ## Wiring
 
@@ -39,43 +39,33 @@ The `main.ino` class implements:
 - **COM (Gate Motor)** → **Relay COM** (Trigger input for gate motor, activated by relay).
 - **I/O1** → **Relay NO** (Trigger input for gate motor, connected to Normally Open terminal of relay).
 
-#### 3. **Gate Motor Status to LLC:**
-- **I/04 (Gate Motor)** → **LLC HV IN** (5V status output connected to high-voltage side of LLC).
+#### 3. **ESP A0 Connections:**
+- **A0** → **10K Resistor** → **I/04** (Status signal from gate motor to Resistor).
+- **A0** → **40k Resistor** → **COM (GATE)** (Negative terminal of gate to resistor).
 
-#### 4. **LLC Connections:**
-- **HV [1-4]** → **I/04** (Status signal from gate motor to LLC).
-- **HV** → **Buck Converter OUT+** (High-voltage side powered by 5V from buck converter).
-- **GND (Next to HV)** → **Buck Converter OUT-** (Negative terminal of buck converter).
-- **LV** → **ESP8266 3.3V** (Low-voltage side, powered by ESP8266).
-- **GND (Next to LV)** → **ESP8266 GND** (Common ground for ESP8266 and LLC).
-- **LV [1-4]** → **ESP8266 GPIO 12** (Converted 3.3V logic signal to GPIO 12 for monitoring gate status).
-
-#### 5. **Relay Module to ESP8266:**
+#### 4. **Relay Module to ESP8266:**
 - **IN** → **ESP8266 GPIO 14** (Control signal from GPIO 14, triggering relay).
 - **NO** → **Gate Motor I/O1** (Normally Open terminal to trigger gate motor).
 - **COM** → **Gate COM** (Connected to the gate COM for isolation).
 - **VCC** → **Buck Converter OUT+** (Power for relay module).
 - **GND** → **BUCK CONVERTER OUT -** (Shared ground for all components).
 
-#### 6. **Buck Converter to Power Sources:**
+#### 5. **Buck Converter to Power Sources:**
 - **VIN (+)** → **Gate Motor +12V Out** (12V input from gate motor to buck converter).
-- **VOUT (-)** → **LLC HV GND**, **Relay GND** (5V ground output).
+- **VOUT (-)** → **Relay GND** (5V ground output).
 - **VOUT (+)** → **ESP8266 Power**, **LLC HV**, **Relay VCC** (5V output for powering ESP8266 and other components).
-- **VIN (-)** → **Gate Motor I/O6** (Shared ground).
+- **VIN (-)** → **COM** (Shared ground).
 
-#### 7. **ESP8266 to LLC and Relay Module:**
-- **GND** → **Gate Motor I/06** (Shared ground).
-- **3.3V** → **LLC LV** (Power for low-voltage side of LLC).
-- **5V** → **Relay VCC**, **LLC HV** (Power for relay and LLC if not using buck converter).
+#### 7. **ESP8266  and Relay Module:**
+- **GND** → **COM** (Shared ground).
+- **3.3V** → **Relay VCC** (Power for relay).
 - **GPIO 14** → **Relay IN** (Control signal to relay).
-- **GPIO 12** → **LLC LV OUT** (Status signal from LLC converted from gate motor I/04).
                                                  |
 
 **Notes:**
 
 * **Common Ground:** All components share a common ground connection possibly in a .
 * **Buck Converter:** The buck converter efficiently steps down the 12V from the gate motor to 5V (and potentially 3.3V) for the other components.
-* **LLC:** The logic level converter ensures compatibility between the 5V gate status signal and the ESP8266's 3.3V logic.
 * **Relay:** The relay acts as the switch to trigger the gate motor's movement.
 
 
@@ -83,9 +73,8 @@ The `main.ino` class implements:
 
 Only 5 connections need to be made to the D5 SMART Gate Motor:
 1. Trig(I/O1): this needs to be connected to ground for the gate to activate. I have connected this to a relay controlled by the ESP8266
-2. Status(I/O4): this needs to be logic-level-converted from 5V to 3.3V. Connect to a GPIO pin of the ESP8266
-3. Com (I/O6, ground, 0V): this is important for two reason: (1) status decoding and (2) triggering (activating) the gate. Because of 
-4. Com (COM, ground, 0V): EXTRA GROUND, this is important for powering
+2. Status(I/O4): this needs to be converted to 1V. Connect to an ADC pin (A0) of the ESP8266 with a 
+3. Com (COM, ground, 0V): this is important for two reason: (1) status decoding and (2) triggering (activating) the gate.
 4. 12V OUT (12V OUT, 12V): this is important for powering
 (1), **the gate must share a ground with the ESP8266**. 
 

@@ -4,7 +4,7 @@
 
 #define LOG_D(fmt, ...)   printf_P(PSTR(fmt "\n") , ##__VA_ARGS__);
 static uint32_t next_heap_millis = 0;
-const int statusPin = 12;  // The status pin connected to the gate
+const int statusPin = A0;  // The status pin connected to the gate
 const int relayPin = 14; // The relay pin that actually controls the gate
 
 unsigned long lastChangeTime = 0;    // Time of the last pin state change
@@ -61,7 +61,9 @@ void loop() {
 
 	}
 
-  int newPinState = digitalRead(statusPin); // Read the current pin state
+  int newPinState = analogRead(statusPin); // Read the current pin state
+  float voltage = sensorValue * (5.01 / 1023.0);  // Convert to voltage (0-5.01V)
+
     unsigned long currentTime = millis();     // Get the current time
 
     // Detect pin state changes
@@ -71,20 +73,12 @@ void loop() {
       lastChangeTime = currentTime;                          // Update the time of the change
 
       // Record HIGH/LOW durations
-      if (newPinState == HIGH)
-      {
-        lowDuration = duration;
-      }
-      else
-      {
-        highDuration = duration;
-      }
+      
 
       lastPinState = newPinState; // Update the last pin state
 
       // Determine flashing patterns
-      if (isWithinRange(highDuration, flashIntervalClosing, hysteresis) &&
-          isWithinRange(lowDuration, flashIntervalClosing, hysteresis))
+      if (voltage >= 4.6 && voltage <= 4.8)
       {
         // Closing pattern detected
         if (gateState != 3)
@@ -101,8 +95,7 @@ void loop() {
           }
         }
       }
-      else if (isWithinRange(highDuration, flashIntervalOpening, hysteresis) &&
-               isWithinRange(lowDuration, flashIntervalOpening, hysteresis))
+      else if (voltage >= 4.4 && voltage <= 4.9)
       {
         // Opening pattern detected
         if (gateState != 2)
@@ -124,7 +117,7 @@ void loop() {
     // Determine stable states (Open/Closed)
     if ((currentTime - lastChangeTime) > stableThreshold)
     {
-      if (lastPinState == LOW && gateState != 1)
+      if (voltage <= 0.1 && gateState != 1)
       {
         // Signal is stable LOW, indicating the gate is fully closed
         gateState = 1;
@@ -138,7 +131,7 @@ void loop() {
           homekit_characteristic_notify(&cha_target_state, cha_target_state.value); 
         }
       }
-      else if (lastPinState == HIGH && gateState != 0)
+      else if (voltage >= 5.00 && gateState != 0)
       {
         // Signal is stable HIGH, indicating the gate is fully open
         gateState = 0;
