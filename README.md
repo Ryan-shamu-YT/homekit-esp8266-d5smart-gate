@@ -15,7 +15,7 @@ The system uses an ESP8266 microcontroller to manage a relay and monitor the gat
 - **Relay Control:** The relay pin (GPIO 14) triggers the gate motor.
 - **Status Monitoring:** The status pin (A0) monitors the gate's operation based on voltage sent by the gate controller.
 - **Flashing Patterns:** The gate signals its state using voltage levels, where the voltage of the IO/4 indicates whether the gate is opening or closing.
-- **Voltage Conversion:** A VOLTAGE DIVIDING circuit is used to shift the gate's 5V status signal to a 3.3v input which the esp8266 will automatically scale down to 1v suitable for the ESP8266 A0 pin.
+- **Voltage Conversion:** A VOLTAGE DIVIDING circuit is used to shift the gate's 5V status signal to a 3.3v input which the ESP8266 will automatically scale down to 1v suitable for the ESP8266 A0 pin.
 
 The `main.ino` class implements:
 - `update()` – Triggered by HomeKit to open/close the gate.
