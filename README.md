@@ -1,8 +1,8 @@
-# HomeKit Gate Controller for Centurion D5-Evo Gate Motor
+# HomeKit Gate Controller for Centurion D5-SMART Gate Motor
 
-**HomeKit gate controller for Centurion (Centsys) D5 Evo gate motor**
+**HomeKit gate controller for Centurion (Centsys) D5 SMART gate motor**
 
-This project implements a HomeKit-compatible gate controller using an ESP8266 microcontroller and the Arduino-HomeKit-ESP8266 library, specifically designed for Centurion (Centsys) D5-Evo gate motors. It enables remote control and status monitoring of the gate with Apple HomeKit.
+This project implements a HomeKit-compatible gate controller using an ESP8266 microcontroller and the Arduino-HomeKit-ESP8266 library, specifically designed for Centurion (Centsys) D5-SMART gate motors. It enables remote control and status monitoring of the gate with Apple HomeKit.
 
 ## Features
 - ✅ **HomeKit Integration:** Seamless control via the Apple Home app using the HomeSpan library.
