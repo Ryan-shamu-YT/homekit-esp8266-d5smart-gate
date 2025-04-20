@@ -15,7 +15,7 @@ The system uses an ESP8266 microcontroller to manage a relay and monitor the gat
 - **Relay Control:** The relay pin (GPIO 14) triggers the gate motor.
 - **Status Monitoring:** The status pin (A0) monitors the gate's operation based on voltage sent by the gate controller.
 - **Flashing Patterns:** The gate signals its state using voltage levels, where the voltage of the IO/4 indicates whether the gate is opening or closing.
-- **Voltage Conversion:** A VOLTAGE DIVIDING circuit is used to shift the gate's 5V status signal to a 1V input suitable for the ESP8266 A0 pin.
+- **Voltage Conversion:** A VOLTAGE DIVIDING circuit is used to shift the gate's 5V status signal to a 3.3v input which the esp8266 will automatically scale down to 1v suitable for the ESP8266 A0 pin.
 
 The `main.ino` class implements:
 - `update()` – Triggered by HomeKit to open/close the gate.
@@ -24,50 +24,44 @@ The `main.ino` class implements:
 ## Hardware Requirements
 - ESP8266 microcontroller
 - Relay module (for gate control)
-- Buck Converter (Optional if you want to use another source of power)
-- 10K Resistor and 40k Resistor (5V to 1V signal conversion on A0 pin)
+- Resistors (5V signal conversion on A0 pin)
 
 ## Wiring
 
-### Gate Motor, LLC, Relay Module, Buck Converter, and ESP8266 Connections
+### Gate Motor, Relay Module, and ESP8266 Connections
 
-#### 1. **Gate Motor to Buck Converter:**
-- **COM** → **Buck Converter IN-** (Use ground from gate motor for isolation).
-- **+12V Out** → **Buck Converter IN+** (12V output for buck converter input).
-  
-#### 2. **Gate Motor to Relay Module:**
+
+#### 1. **Gate Motor to Relay Module:**
 - **COM (Gate Motor)** → **Relay COM** (Trigger input for gate motor, activated by relay).
 - **I/O1** → **Relay NO** (Trigger input for gate motor, connected to Normally Open terminal of relay).
 
-#### 3. **ESP A0 Connections:**
-- **A0** → **10K Resistor** → **I/04** (Status signal from gate motor to Resistor).
-- **A0** → **40k Resistor** → **COM (GATE)** (Negative terminal of gate to resistor).
-
-#### 4. **Relay Module to ESP8266:**
+#### 2. **Relay Module to ESP8266:**
 - **IN** → **ESP8266 GPIO 14** (Control signal from GPIO 14, triggering relay).
 - **NO** → **Gate Motor I/O1** (Normally Open terminal to trigger gate motor).
 - **COM** → **Gate COM** (Connected to the gate COM for isolation).
-- **VCC** → **Buck Converter OUT+** (Power for relay module).
-- **GND** → **BUCK CONVERTER OUT -** (Shared ground for all components).
+- **VCC** → **ESP8266 3.3V OUTPUT+** (Power for relay)
+- **GND** → **ESP8266 GND -** (Ground).
 
-#### 5. **Buck Converter to Power Sources:**
-- **VIN (+)** → **Gate Motor +12V Out** (12V input from gate motor to buck converter).
-- **VOUT (-)** → **Relay GND** (5V ground output).
-- **VOUT (+)** → **ESP8266 Power**, **LLC HV**, **Relay VCC** (5V output for powering ESP8266 and other components).
-- **VIN (-)** → **COM** (Shared ground).
+#### 3. **ESP A0 Connections:**
+- **A0** → ** R1 Resistor (See in possible resistor combinatins) ** → **I/04** (Status signal from gate motor to Resistor).
+- **A0** → ** R2 Resistor (See in possible resistor combinatins) ** → **COM (GATE)** (Negative terminal of gate to resistor).
+- Both need to connect to A0 to form a voltage dividrt
 
-#### 7. **ESP8266  and Relay Module:**
-- **GND** → **COM** (Shared ground).
-- **3.3V** → **Relay VCC** (Power for relay).
-- **GPIO 14** → **Relay IN** (Control signal to relay).
+**Possible Resistor Combinations**
+To form our voltage divider, we need 2 resistors going from the gate IO4 and COM pins to the ESP8266 A0 pim
+The ESP8266 board (not chip) has a built system to convert 3.3v to 1v for A0
+The code accounts for this, we convert 5v from the gate to 3.3v to 1v by the board and in the code do calculations to get the original voltage
+
+Here are a few combinations of resistors to convert 5v to 3.3v (preferably lower to account for spikes)
+
+
                                                  |
-
 **Notes:**
 
 * **Common Ground:** All components share a common ground connection possibly in a .
 * **Buck Converter:** The buck converter efficiently steps down the 12V from the gate motor to 5V (and potentially 3.3V) for the other components.
 * **Relay:** The relay acts as the switch to trigger the gate motor's movement.
-
+ 
 
 ![428311938-f44cfe6e-a5c6-495d-8480-1c9bc4ff0227](https://github.com/user-attachments/assets/ce4036c2-da26-44a4-bb67-4f9955ee7813)
 
