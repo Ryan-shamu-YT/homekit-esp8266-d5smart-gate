@@ -54,7 +54,7 @@ The code accounts for this, we convert 5v from the gate to 3.3v to 1v by the boa
 
 Here are a few combinations of resistors to convert 5v to 3.3v (preferably lower to account for spikes)
 
-[image](https://github.com/user-attachments/assets/85d37db1-0a26-4de6-bbf2-0a6366b86bab)
+![image](https://github.com/user-attachments/assets/85d37db1-0a26-4de6-bbf2-0a6366b86bab)
                                                  |
 **Notes:**
 
