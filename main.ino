@@ -6,8 +6,7 @@
 static uint32_t next_heap_millis = 0;
 const int statusPin = A0;  // The status pin connected to the gate
 const int relayPin = 14; // The relay pin that actually controls the gate
-const float R1 = 5100.0;  // 5.1 kΩ
-const float R2 = 10000.0; // 10 kΩ
+
 
 unsigned long lastChangeTime = 0;    // Time of the last pin state change
 unsigned long highDuration = 0;      // Duration the pin was HIGH
