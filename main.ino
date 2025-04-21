@@ -53,6 +53,10 @@ void my_homekit_setup() {
 	//homekit_characteristic_notify(&cha_switch_on, cha_switch_on.value); 
 }
 
+float round1(float value) {
+  return round(value * 10.0) / 10.0;
+}
+
 void loop() {
   arduino_homekit_loop();
 	const uint32_t t = millis();
@@ -64,9 +68,10 @@ void loop() {
 	}
 
   int newPinState = analogRead(statusPin); // Read the current pin state
-  float vOnA0 = newPinState * (1.0 / 1023.0);        // 0–1 V
-  float vAfterExt = vOnA0 * 3.3;                 // 0–3.3 V
-  float voltage = vAfterExt * (R1 + R2) / R2;  // 0–5.0 V
+  //float vOnA0 = newPinState * (1.0 / 1023.0);        // 0–1 V
+  //float vAfterExt = vOnA0 * 3.3;                 // 0–3.3 V
+  //float voltage = vAfterExt * (R1 + R2) / R2;  // 0–5.0 V
+  float voltage = round1(newPinState * (5.01 / 1023.0));       
 
     unsigned long currentTime = millis();     // Get the current time
 
