@@ -66,11 +66,11 @@ Here are a few combinations of resistors to convert 5v to 3.3v (preferably lower
 
 ![428311938-f44cfe6e-a5c6-495d-8480-1c9bc4ff0227](https://github.com/user-attachments/assets/ce4036c2-da26-44a4-bb67-4f9955ee7813)
 
-Only 5 connections need to be made to the D5 SMART Gate Motor:
+Only 3 connections need to be made to the D5 SMART Gate Motor:
 1. Trig(I/O1): this needs to be connected to ground for the gate to activate. I have connected this to a relay controlled by the ESP8266
 2. Status(I/O4): this needs to be converted to 1V. Connect to an ADC pin (A0) of the ESP8266 with a 
 3. Com (COM, ground, 0V): this is important for two reason: (1) status decoding and (2) triggering (activating) the gate.
-4. 12V OUT (12V OUT, 12V): this is important for powering
+
 (1), **the gate must share a ground with the ESP8266**. 
 
 
