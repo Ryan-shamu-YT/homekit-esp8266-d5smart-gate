@@ -6,6 +6,8 @@
 static uint32_t next_heap_millis = 0;
 const int statusPin = A0;  // The status pin connected to the gate
 const int relayPin = 14; // The relay pin that actually controls the gate
+const float R1 = 5100.0;  // 5.1 kΩ
+const float R2 = 10000.0; // 10 kΩ
 
 unsigned long lastChangeTime = 0;    // Time of the last pin state change
 unsigned long highDuration = 0;      // Duration the pin was HIGH
@@ -62,7 +64,9 @@ void loop() {
 	}
 
   int newPinState = analogRead(statusPin); // Read the current pin state
-  float voltage = sensorValue * (5.01 / 1023.0);  // Convert to voltage (0-5.01V)
+  float vOnA0 = newPinState * (1.0 / 1023.0);        // 0–1 V
+  float vAfterExt = vOnA0 * 3.3;                 // 0–3.3 V
+  float voltage = vAfterExt * (R1 + R2) / R2;  // 0–5.0 V
 
     unsigned long currentTime = millis();     // Get the current time
 
