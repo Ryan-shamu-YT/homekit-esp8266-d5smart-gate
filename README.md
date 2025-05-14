@@ -48,13 +48,12 @@ The `main.ino` class implements:
 - Both need to connect to A0 to form a voltage divider
 
 **Possible Resistor Combinations**
-To form our voltage divider, we need 2 resistors going from the gate IO4 and COM pins to the ESP8266 A0 pim
+To form our voltage divider, we need 2 resistors going from the gate IO4 and COM pins to the ESP8266 A0 pin
 The ESP8266 board (not chip) has a built system to convert 3.3v to 1v for A0
 The code accounts for this, we convert 5v from the gate to 3.3v to 1v by the board and in the code do calculations to get the original voltage
 
-Here are a few combinations of resistors to convert 5v to 3.3v (preferably lower to account for spikes)
+You may use a voltage divider calculator online to find which resistors can work.
 
-![image](https://github.com/user-attachments/assets/85d37db1-0a26-4de6-bbf2-0a6366b86bab)
 
 
 **Notes:**
