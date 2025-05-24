@@ -40,6 +40,7 @@ void setup() {
 	wifi_connect(); // in wifi_info.h
   pinMode(relayPin, OUTPUT);
   pinMode(statusPin, INPUT_PULLUP);
+  digitalWrite(relayPin, HIGH);
 	//homekit_storage_reset(); // to remove the previous HomeKit pairing storage when you first run this new HomeKit example
 	my_homekit_setup();
 }
@@ -175,21 +176,21 @@ void update(const homekit_value_t value) {
       {
         Serial.println("Gate was closing; now opening");
         // Gate is closing, pulse the relay twice to reverse direction
-        digitalWrite(relayPin, HIGH);
-        delay(500);
         digitalWrite(relayPin, LOW);
         delay(500);
         digitalWrite(relayPin, HIGH);
         delay(500);
         digitalWrite(relayPin, LOW);
+        delay(500);
+        digitalWrite(relayPin, HIGH);
       }
       else
       {
         Serial.println("Opening the gate");
         // Open the gate
-        digitalWrite(relayPin, HIGH);
-        delay(500);
         digitalWrite(relayPin, LOW);
+        delay(500);
+        digitalWrite(relayPin, HIGH);
       }
       if (cha_current_state.value.int_value != 0) {
         cha_current_state.value.int_value = 0;
@@ -212,21 +213,21 @@ void update(const homekit_value_t value) {
       {
         Serial.println("Gate was opening; now closing");
         // Gate is opening, pulse the relay twice to reverse direction
-        digitalWrite(relayPin, HIGH);
-        delay(500);
         digitalWrite(relayPin, LOW);
         delay(500);
         digitalWrite(relayPin, HIGH);
         delay(500);
         digitalWrite(relayPin, LOW);
+        delay(500);
+        digitalWrite(relayPin, HIGH);
       }
       else
       {
         Serial.println("Closing the gate");
         // Close the gate
-        digitalWrite(relayPin, HIGH);
-        delay(500);
         digitalWrite(relayPin, LOW);
+        delay(500);
+        digitalWrite(relayPin, HIGH);
       }
       if (cha_current_state.value.int_value != 1) {
         cha_current_state.value.int_value = 1;
@@ -243,12 +244,3 @@ void update(const homekit_value_t value) {
 
 
 
-
-
-void open_lock(){
-  Serial.println("unsecure"); 
-}
-
-void close_lock(){
-  Serial.println("secure");  
-}
