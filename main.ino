@@ -5,7 +5,7 @@
 #define LOG_D(fmt, ...)   printf_P(PSTR(fmt "\n") , ##__VA_ARGS__);
 static uint32_t next_heap_millis = 0;
 const int statusPin = A0;  // The status pin connected to the gate
-const int relayPin = 14; // The relay pin that actually controls the gate
+const int relayPin = 5; // The relay pin that actually controls the gate
 
 
 unsigned long lastChangeTime = 0;    // Time of the last pin state change
@@ -40,7 +40,7 @@ void setup() {
 	wifi_connect(); // in wifi_info.h
   pinMode(relayPin, OUTPUT);
   pinMode(statusPin, INPUT_PULLUP);
-  digitalWrite(relayPin, HIGH);
+  digitalWrite(relayPin, LOW);
 	//homekit_storage_reset(); // to remove the previous HomeKit pairing storage when you first run this new HomeKit example
 	my_homekit_setup();
 }
@@ -149,14 +149,14 @@ void loop() {
           cha_current_state.value.int_value = 0;
           homekit_characteristic_notify(&cha_current_state, cha_current_state.value); 
         }
-        if (cha_target_state.value.int_value = 0) {
+        if (cha_target_state.value.int_value == 0) {
           cha_target_state.value.int_value = 0;
           homekit_characteristic_notify(&cha_target_state, cha_target_state.value); 
         }
       }
     }
 
-    delay(50);  
+    delay(25);  
 }
 
 void update(const homekit_value_t value) {
@@ -176,21 +176,21 @@ void update(const homekit_value_t value) {
       {
         Serial.println("Gate was closing; now opening");
         // Gate is closing, pulse the relay twice to reverse direction
-        digitalWrite(relayPin, LOW);
-        delay(500);
         digitalWrite(relayPin, HIGH);
         delay(500);
         digitalWrite(relayPin, LOW);
         delay(500);
         digitalWrite(relayPin, HIGH);
+        delay(500);
+        digitalWrite(relayPin, LOW);
       }
       else
       {
         Serial.println("Opening the gate");
         // Open the gate
-        digitalWrite(relayPin, LOW);
-        delay(500);
         digitalWrite(relayPin, HIGH);
+        delay(500);
+        digitalWrite(relayPin, LOW);
       }
       if (cha_current_state.value.int_value != 0) {
         cha_current_state.value.int_value = 0;
@@ -213,21 +213,21 @@ void update(const homekit_value_t value) {
       {
         Serial.println("Gate was opening; now closing");
         // Gate is opening, pulse the relay twice to reverse direction
-        digitalWrite(relayPin, LOW);
-        delay(500);
         digitalWrite(relayPin, HIGH);
         delay(500);
         digitalWrite(relayPin, LOW);
         delay(500);
         digitalWrite(relayPin, HIGH);
+        delay(500);
+        digitalWrite(relayPin, LOW);
       }
       else
       {
         Serial.println("Closing the gate");
         // Close the gate
-        digitalWrite(relayPin, LOW);
-        delay(500);
         digitalWrite(relayPin, HIGH);
+        delay(500);
+        digitalWrite(relayPin, LOW);
       }
       if (cha_current_state.value.int_value != 1) {
         cha_current_state.value.int_value = 1;
