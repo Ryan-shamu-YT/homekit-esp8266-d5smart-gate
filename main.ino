@@ -71,7 +71,7 @@ void loop() {
   //float vOnA0 = newPinState * (1.0 / 1023.0);        // 0–1 V
   //float vAfterExt = vOnA0 * 3.3;                 // 0–3.3 V
   //float voltage = vAfterExt * (R1 + R2) / R2;  // 0–5.0 V
-  float voltage = round1(newPinState * (5.01 / 1023.0));       
+  float voltage = round1(newPinState * (5.01 / 775.0));       
 
     unsigned long currentTime = millis();     // Get the current time
 
